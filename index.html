@@ -353,24 +353,33 @@ const App={
 
             case "interview":
 
-    target.innerHTML=`
+const lastAssistant =
+    [...App.state.chat]
+    .reverse()
+    .find(m => m.role === "assistant");
 
-    <div class="card">
+target.innerHTML = `
 
-        <h2>Cyber Incident Interview</h2>
+<div class="card">
 
-        <textarea
-            id="incident"
-            placeholder="Describe exactly what happened...">
-        </textarea>
+    <h2>Cyber Incident Interview</h2>
 
-        <button onclick="Interview.submit()">
-            START INTERVIEW
-        </button>
+    <p style="margin-bottom:20px;">
+        ${lastAssistant ? lastAssistant.text : ""}
+    </p>
 
-    </div>
+    <textarea
+        id="incident"
+        placeholder="Type your answer here...">
+    </textarea>
 
-    `;
+    <button onclick="Interview.submit()">
+        SEND ANSWER
+    </button>
+
+</div>
+
+`;
 
 break;
 
@@ -482,7 +491,16 @@ const response = await fetch(CONFIG.API_URL, {
 
             if (result.complete) {
 
-    App.state.report = result;
+    App.state.chat.push({
+        role: "assistant",
+        text: result.analysis
+    });
+
+    App.state.report = {
+        risk: result.risk,
+        analysis: result.analysis,
+        mitigation: result.mitigation
+    };
 
     App.setStatus("INTERVIEW COMPLETE");
 
@@ -497,7 +515,7 @@ const response = await fetch(CONFIG.API_URL, {
 
     App.setStatus("AWAITING USER RESPONSE");
 
-    Chat.render();
+    App.navigate("interview");
 
 }
 }
