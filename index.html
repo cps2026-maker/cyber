@@ -255,7 +255,7 @@
 
 const CONFIG = {
 
-    API_URL:"https://script.google.com/macros/s/AKfycbz3DsQIJip2g-RsE4RdvAmCXutR95-H8DRzwZoA1UR2q5DCABrZpGI3xXbcs-f9-13d/exec"
+    API_URL:"https://script.google.com/macros/s/AKfycbypnzdbkY9jO1xBe2ewQSl-STCQaeZAuICL4TKH5XggSSO7h4hQFx8R6wtMDXkVv8MeNQ/exec"
 
 };
 
@@ -353,10 +353,9 @@ const App={
 
             case "interview":
 
-const lastAssistant =
-    [...App.state.chat]
-    .reverse()
-    .find(m => m.role === "assistant");
+const conversation = App.state.chat
+    .map(m => `<p><strong>${m.role}:</strong> ${m.text}</p>`)
+    .join("");
 
 target.innerHTML = `
 
@@ -364,9 +363,9 @@ target.innerHTML = `
 
     <h2>Cyber Incident Interview</h2>
 
-    <p style="margin-bottom:20px;">
-        ${lastAssistant ? lastAssistant.text : ""}
-    </p>
+    <div style="margin-bottom:20px;">
+    ${conversation}
+</div>
 
     <textarea
         id="incident"
@@ -495,7 +494,11 @@ if (!response.ok) {
 
 const result = await response.json();
 
-            if (result.success) {
+            if (!result.success) {
+    throw new Error(result.error || "Analysis failed.");
+}
+
+if (result.complete) {
 
     App.state.chat.push({
         role: "assistant",
@@ -514,10 +517,16 @@ const result = await response.json();
 
 } else {
 
-    throw new Error(result.error || "Analysis failed.");
+    App.state.chat.push({
+        role: "assistant",
+        text: result.question
+    });
 
-}
-}
+    App.setStatus("AWAITING RESPONSE");
+
+    App.navigate("interview");
+
+}}
         catch (err) {
 
             console.error(err);
