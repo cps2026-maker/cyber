@@ -8,7 +8,7 @@
         :root {
             --term-green: #39ff14;
             --term-bg: #030712;
-            --sidebar-bg: rgba(6, 11, 25, 0.9);
+            --sidebar-bg: rgba(6, 11, 25, 0.95);
             --card-bg: rgba(10, 25, 47, 0.7);
             --term-dim: #0f766e;
             --border-glow: #00ffcc;
@@ -32,9 +32,10 @@
             display: flex;
             height: 100vh;
             overflow: hidden;
+            position: relative;
         }
 
-        /* Collapsible Sidebar Styling */
+        /* Collapsible Sidebar Styling (Responsive Overlay / Push approach) */
         aside {
             width: 320px;
             background: var(--sidebar-bg);
@@ -45,8 +46,9 @@
             display: flex;
             flex-direction: column;
             position: relative;
-            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-            z-index: 10;
+            transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1), width 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            z-index: 100;
+            flex-shrink: 0;
         }
 
         /* Closed Sidebar state */
@@ -55,7 +57,6 @@
             padding: 30px 0px;
             overflow: hidden;
             border-right-width: 0px;
-            pointer-events: none;
         }
 
         /* Sidebar Toggle Control Button */
@@ -76,7 +77,6 @@
             font-weight: bold;
             border-radius: 0 4px 4px 0;
             box-shadow: 5px 0 10px rgba(0, 240, 255, 0.15);
-            pointer-events: auto !important; /* Always clickable */
             transition: all 0.3s ease;
         }
 
@@ -105,6 +105,7 @@
             align-items: center;
             justify-content: center;
             box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
+            flex-shrink: 0;
         }
 
         .logo-icon::before {
@@ -156,8 +157,6 @@
             cursor: pointer;
             margin-bottom: 15px;
             transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
             white-space: nowrap;
         }
 
@@ -183,10 +182,7 @@
             overflow-y: auto;
             position: relative;
             transition: padding 0.4s ease;
-        }
-        
-        body.sidebar-closed main {
-            padding-left: 60px; /* Provides uniform cushion padding when sidebar shuts */
+            width: 100%;
         }
 
         .view-header {
@@ -203,7 +199,7 @@
             margin-bottom: 30px;
         }
 
-        /* Dashboard View Layout Grid */
+        /* Dashboard View Responsive Grid Layout */
         .capabilities-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
@@ -249,6 +245,7 @@
             font-size: 1.1rem;
             margin-bottom: 10px;
             letter-spacing: 1px;
+            word-break: break-all;
         }
 
         .card-content ul {
@@ -290,6 +287,8 @@
             border-radius: 4px;
             box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
             transition: all 0.3s ease;
+            max-width: 100%;
+            text-align: center;
         }
 
         .btn-primary:hover {
@@ -306,6 +305,7 @@
             border-radius: 6px;
             box-shadow: 0 10px 30px rgba(0,0,0,0.7);
             overflow: hidden;
+            width: 100%;
         }
 
         .terminal-header {
@@ -332,7 +332,7 @@
         }
 
         .terminal-body {
-            padding: 25px;
+            padding: 20px;
             min-height: 180px;
         }
 
@@ -340,6 +340,7 @@
             margin-bottom: 15px;
             line-height: 1.5;
             font-size: 0.95rem;
+            word-wrap: break-word;
         }
 
         .chat-line.user {
@@ -378,7 +379,7 @@
             background: transparent;
             border: 1px solid var(--term-green);
             color: var(--term-green);
-            padding: 0 25px;
+            padding: 0 20px;
             border-radius: 4px;
             cursor: pointer;
             font-family: inherit;
@@ -388,6 +389,68 @@
         .send-btn:hover {
             background: var(--term-green);
             color: #000;
+        }
+
+        /* Mobile Breakpoint Rules Overrides (<= 868px) */
+        @media (max-width: 868px) {
+            body {
+                /* Defaults layout closed on tiny displays */
+            }
+
+            body:not(.sidebar-closed) aside {
+                transform: translateX(0);
+                width: 290px;
+            }
+
+            body.sidebar-closed aside {
+                transform: translateX(-100%);
+                width: 0px;
+                position: absolute;
+            }
+
+            aside {
+                position: absolute;
+                top: 0;
+                left: 0;
+                height: 100%;
+                transform: translateX(0);
+                transition: transform 0.35s ease-out;
+            }
+
+            .sidebar-toggle {
+                right: -45px;
+                top: 15px;
+            }
+
+            main {
+                padding: 20px;
+                padding-top: 70px; /* Cushion room for the top sticky-toggle */
+                width: 100vw;
+            }
+
+            .capabilities-grid {
+                grid-template-columns: 1fr; /* Stack items vertically */
+                gap: 15px;
+            }
+
+            .view-title {
+                font-size: 1.6rem;
+                margin-bottom: 20px;
+            }
+
+            .btn-primary {
+                width: 100%;
+                padding: 14px 20px;
+                font-size: 0.95rem;
+            }
+
+            .input-container {
+                flex-direction: column;
+            }
+
+            .send-btn {
+                padding: 12px;
+            }
         }
 
         @keyframes blink {
@@ -402,11 +465,10 @@
         }
     </style>
 </head>
-<body>
+<body class="sidebar-closed"> <!-- Mobile optimized: starts closed by default -->
 
 <aside>
-    <!-- Toggle tab positioned on the dynamic right outer edge -->
-    <button class="sidebar-toggle" onclick="App.toggleSidebar()" title="Toggle Sidebar">☰</button>
+    <button class="sidebar-toggle" onclick="App.toggleSidebar()" title="Toggle Menu">☰</button>
 
     <div class="logo-container">
         <div class="logo-icon"></div>
@@ -431,7 +493,7 @@
 
 <main>
     <div id="view">
-        <!-- Content injects dynamically here -->
+        <!-- Dashboard dynamically generated content -->
     </div>
 </main>
 
@@ -463,7 +525,11 @@ const App = {
     navigate(page) {
         this.state.page = page;
         
-        // Update Active Nav Style
+        // Auto-close sidebar on mobile view upon navigation click selections
+        if (window.innerWidth <= 868) {
+            document.body.classList.add('sidebar-closed');
+        }
+
         document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
         const activeBtn = document.getElementById(`nav-${page}`);
         if(activeBtn) activeBtn.classList.add('active');
@@ -567,7 +633,7 @@ const App = {
                             <div class="terminal-controls">⚊ 🗖 ✕</div>
                         </div>
                         <div class="terminal-body">
-                            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+                            <div style="max-height: 260px; overflow-y: auto; margin-bottom: 20px;">
                                 ${this.state.chat.map(m => `
                                     <div class="chat-line ${m.role}">
                                         <strong>${m.role}:</strong> ${m.text}
@@ -668,7 +734,7 @@ const Interview = {
     }
 };
 
-// Start system initialization
+// Initial startup rendering setup
 App.render();
 </script>
 </body>
