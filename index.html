@@ -679,7 +679,7 @@
 
 <script>
 const CONFIG = {
-    API_URL: "https://script.google.com/macros/s/AKfycbytx80Yk6ghgbaZ7lPUYsIdtgDO98dxK-oCGrIkJsIs3l4swF9bHEPfMvdlzWCiEGZAZg/exec"
+    API_URL: "https://script.google.com/macros/s/AKfycbypnzdbkY9jO1xBe2ewQSl-STCQaeZAuICL4TKH5XggSSO7h4hQFx8R6wtMDXkVv8MeNQ/exec"
 };
 
 const App = {
@@ -730,6 +730,7 @@ const App = {
     },
 
     // Matrix style Hacker Sequence Loading Controls
+    // Matrix style Hacker Sequence Loading Controls (Heavy Compute Simulation)
     showHackerLoader(onCompleteCallback) {
         const loader = document.getElementById('hacker-loader');
         const bar = document.getElementById('load-bar');
@@ -742,32 +743,48 @@ const App = {
         logBox.innerHTML = '';
 
         const logs = [
-            "Connecting to terminal node response matrix...",
-            "Hooking security interceptors into sub-sockets...",
-            "Parsing structural incident JSON packets...",
-            "Decrypting payload anomalies via telemetry blocks...",
-            "Compiling tactical risk indicators... DONE",
-            "Synthesizing network remediation models..."
+            "Initializing deep kernel trace mechanics...",
+            "Hooking secure interceptors into remote sub-sockets...",
+            "Decrypting structural anomaly packets [RSA-4096]...",
+            "Parsing heuristic threat parameters against cloud index...",
+            "Correlating zero-day signatures across localized telemetry grids...",
+            "Isolating data anomalies and computing vector weights...",
+            "Synthesizing network remediation profiles..."
         ];
 
         let currentProgress = 0;
         let logIndex = 0;
 
-        const interval = setInterval(() => {
-            currentProgress += Math.floor(Math.random() * 8) + 4;
+        // Custom step execution worker to simulate a heavy processing load
+        function processNextStep() {
+            // Random increments make it feel like it's grinding on hard tasks
+            let increment = Math.floor(Math.random() * 5) + 2; 
+            
+            // Artificial "bottleneck stalls" at critical processing junctures
+            if ((currentProgress >= 32 && currentProgress <= 36) || 
+                (currentProgress >= 72 && currentProgress <= 76)) {
+                increment = Math.floor(Math.random() * 2); // Barely moving
+            }
+
+            currentProgress += increment;
+
             if (currentProgress >= 100) {
                 currentProgress = 100;
-                clearInterval(interval);
+                bar.style.width = '100%';
+                pct.innerText = '100%';
+                
+                // Final brief pause for dramatic effect before showing the result
                 setTimeout(() => {
                     loader.style.display = 'none';
                     onCompleteCallback();
-                }, 400);
+                }, 600);
+                return;
             }
             
             bar.style.width = currentProgress + '%';
             pct.innerText = currentProgress + '%';
 
-            // Dynamically write log logs during increments
+            // Print logs corresponding to the progress achieved
             const expectedLogIndex = Math.min(Math.floor((currentProgress / 100) * logs.length), logs.length - 1);
             if (expectedLogIndex >= logIndex) {
                 for (let i = logIndex; i <= expectedLogIndex; i++) {
@@ -779,7 +796,17 @@ const App = {
                 logIndex = expectedLogIndex + 1;
                 logBox.scrollTop = logBox.scrollHeight;
             }
-        }, 80);
+
+            // Variable timeouts break the linear speed feel entirely
+            let nextDelay = Math.floor(Math.random() * 120) + 60;
+            if (currentProgress > 30 && currentProgress < 45) nextDelay += 180; // Add extra weight to decryption phase
+            if (currentProgress > 70 && currentProgress < 80) nextDelay += 250; // Add heavy delay to matrix correlation
+
+            setTimeout(processNextStep, nextDelay);
+        }
+
+        // Spin up the engine loop
+        setTimeout(processNextStep, 150);
     },
 
     render() {
