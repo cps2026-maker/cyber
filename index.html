@@ -3,563 +3,619 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
     <title>CyberShield Assist</title>
-
     <style>
-
-        :root{
-            --term-green:#00ff41;
-            --term-bg:#0d0208;
-            --term-dim:#008f11;
-            --danger:#ff4b4b;
-            --warning:#ffcc00;
+        :root {
+            --term-green: #39ff14;
+            --term-bg: #030712;
+            --sidebar-bg: rgba(6, 11, 25, 0.9);
+            --card-bg: rgba(10, 25, 47, 0.7);
+            --term-dim: #0f766e;
+            --border-glow: #00ffcc;
+            --text-blue: #5b7fff;
         }
 
-        *{
-            margin:0;
-            padding:0;
-            box-sizing:border-box;
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        body{
-            background:var(--term-bg);
-            color:var(--term-green);
-            font-family:"Courier New",monospace;
-            display:flex;
-            height:100vh;
-            overflow:hidden;
+        body {
+            background: var(--term-bg);
+            background-image: 
+                linear-gradient(rgba(0, 255, 204, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 255, 204, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px;
+            color: #e2e8f0;
+            font-family: 'Courier New', Courier, monospace;
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
         }
 
-        aside{
-
-            width:300px;
-
-            background:#080808;
-
-            border-right:1px solid var(--term-dim);
-
-            padding:20px;
-
-            overflow-y:auto;
-
+        /* Sidebar Styling matching image_664045.jpg */
+        aside {
+            width: 320px;
+            background: var(--sidebar-bg);
+            border: 2px solid #1e293b;
+            border-right: 2px solid #00f0ff;
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.15);
+            padding: 30px 20px;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        main{
-
-            flex:1;
-
-            overflow-y:auto;
-
-            padding:40px;
-
+        .logo-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 30px;
         }
 
-        h1,h2,h3{
-
-            letter-spacing:2px;
-
-            text-transform:uppercase;
-
-            margin-bottom:15px;
-
+        .logo-icon {
+            width: 45px;
+            height: 45px;
+            border: 2px solid #00f0ff;
+            border-radius: 4px;
+            position: relative;
+            background: linear-gradient(45deg, #0f172a, #1e293b);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 10px rgba(0, 240, 255, 0.3);
         }
 
-        hr{
-
-            border:none;
-
-            border-top:1px solid var(--term-dim);
-
-            margin:15px 0;
-
+        .logo-icon::before {
+            content: '🛡️';
+            font-size: 24px;
         }
 
-        button{
-
-            width:100%;
-
-            margin-top:10px;
-
-            padding:12px;
-
-            background:transparent;
-
-            color:var(--term-green);
-
-            border:1px solid var(--term-green);
-
-            cursor:pointer;
-
-            transition:.3s;
-
+        aside h2 {
+            font-size: 1.1rem;
+            color: #ffffff;
+            font-weight: bold;
+            letter-spacing: 1px;
+            line-height: 1.2;
         }
 
-        button:hover{
-
-            background:var(--term-green);
-
-            color:#000;
-
+        .status {
+            font-size: 0.85rem;
+            color: #94a3b8;
+            margin-bottom: 40px;
+            display: flex;
+            align-items: center;
+            gap: 5px;
         }
 
-        input,
-        textarea{
-
-            width:100%;
-
-            padding:12px;
-
-            background:#000;
-
-            color:var(--term-green);
-
-            border:1px solid var(--term-dim);
-
-            margin-top:10px;
-
-            margin-bottom:10px;
-
+        .status-online {
+            color: var(--term-green);
+            font-weight: bold;
         }
 
-        textarea{
-
-            min-height:140px;
-
-            resize:vertical;
-
+        .status-cursor {
+            width: 8px;
+            height: 15px;
+            background: var(--term-green);
+            display: inline-block;
+            animation: blink 1s infinite;
         }
 
-        .card{
-
-            border:1px solid var(--term-dim);
-
-            padding:20px;
-
-            margin-bottom:20px;
-
+        .nav-btn {
+            width: 100%;
+            background: rgba(15, 23, 42, 0.6);
+            color: #94a3b8;
+            border: 1px solid rgba(0, 255, 204, 0.3);
+            border-radius: 4px;
+            padding: 14px 15px;
+            text-align: left;
+            font-family: inherit;
+            font-size: 0.9rem;
+            cursor: pointer;
+            margin-bottom: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
         }
 
-        .status{
-
-            color:var(--term-dim);
-
-            font-size:.9rem;
-
-            margin-bottom:20px;
-
+        .nav-btn:hover, .nav-btn.active {
+            color: var(--term-green);
+            border-color: var(--term-green);
+            background: rgba(57, 255, 20, 0.05);
+            box-shadow: inset 0 0 10px rgba(57, 255, 20, 0.2);
+            padding-left: 20px;
         }
 
-        .loading{
-
-            animation:blink 1s infinite;
-
+        .sidebar-footer {
+            margin-top: auto;
+            text-align: center;
+            opacity: 0.2;
+            font-size: 3rem;
         }
 
-        @keyframes blink{
-
-            50%{
-
-                opacity:.2;
-
-            }
-
+        /* Main Workspace Styling */
+        main {
+            flex: 1;
+            padding: 40px;
+            overflow-y: auto;
+            position: relative;
         }
 
-        pre{
-
-            white-space:pre-wrap;
-
-            word-wrap:break-word;
-
+        .view-header {
+            font-size: 0.9rem;
+            color: #64748b;
+            margin-bottom: 5px;
         }
 
-        @media print{
-
-            aside{
-
-                display:none;
-
-            }
-
-            body{
-
-                display:block;
-
-                background:white;
-
-                color:black;
-
-            }
-
-            main{
-
-                padding:20px;
-
-            }
-
-            button{
-
-                display:none;
-
-            }
-
+        .view-title {
+            font-size: 2rem;
+            color: #ffffff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 30px;
         }
 
+        /* Dashboard View Layout Grid */
+        .capabilities-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 30px;
+        }
+
+        .capability-card {
+            background: var(--card-bg);
+            border: 2px solid rgba(0, 255, 204, 0.4);
+            border-radius: 6px;
+            padding: 20px;
+            display: flex;
+            gap: 20px;
+            position: relative;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .capability-card::before {
+            content: '';
+            position: absolute;
+            top: -2px; left: -2px; width: 15px; height: 15px;
+            border-top: 3px solid var(--border-glow);
+            border-left: 3px solid var(--border-glow);
+        }
+
+        .card-icon {
+            width: 60px;
+            height: 60px;
+            border: 2px solid var(--term-green);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--term-green);
+            background: rgba(0, 255, 140, 0.05);
+            flex-shrink: 0;
+        }
+
+        .card-content h3 {
+            color: #ffffff;
+            font-size: 1.1rem;
+            margin-bottom: 10px;
+            letter-spacing: 1px;
+        }
+
+        .card-content ul {
+            list-style: none;
+        }
+
+        .card-content li {
+            color: #94a3b8;
+            font-size: 0.9rem;
+            margin-bottom: 6px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-content li::before {
+            content: '✓';
+            color: var(--term-green);
+            font-weight: bold;
+        }
+
+        /* Centered Action Button */
+        .action-btn-container {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 35px;
+        }
+
+        .btn-primary {
+            background: rgba(0, 240, 255, 0.05);
+            color: #00f0ff;
+            border: 2px solid #00f0ff;
+            padding: 16px 40px;
+            font-family: inherit;
+            font-size: 1.1rem;
+            font-weight: bold;
+            letter-spacing: 2px;
+            cursor: pointer;
+            border-radius: 4px;
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            background: #00f0ff;
+            color: #000000;
+            box-shadow: 0 0 25px #00f0ff;
+            transform: scale(1.02);
+        }
+
+        /* Terminal Window Interface */
+        .terminal-window {
+            background: rgba(5, 10, 20, 0.85);
+            border: 1px solid #334155;
+            border-radius: 6px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.7);
+            overflow: hidden;
+        }
+
+        .terminal-header {
+            background: #0f172a;
+            padding: 10px 20px;
+            border-bottom: 1px solid #334155;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .terminal-title {
+            color: #94a3b8;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .terminal-controls {
+            display: flex;
+            gap: 8px;
+            color: #475569;
+            font-size: 0.8rem;
+        }
+
+        .terminal-body {
+            padding: 25px;
+            min-height: 180px;
+        }
+
+        .chat-line {
+            margin-bottom: 15px;
+            line-height: 1.5;
+            font-size: 0.95rem;
+        }
+
+        .chat-line.user {
+            color: var(--text-blue);
+        }
+
+        .chat-line.assistant {
+            color: var(--term-green);
+        }
+
+        /* Forms & Inputs styling */
+        .input-container {
+            margin-top: 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        textarea {
+            flex: 1;
+            background: #020617;
+            border: 1px solid #334155;
+            border-radius: 4px;
+            padding: 15px;
+            color: #e2e8f0;
+            font-family: inherit;
+            resize: none;
+            height: 80px;
+        }
+
+        textarea:focus {
+            outline: none;
+            border-color: var(--term-green);
+        }
+
+        .send-btn {
+            background: transparent;
+            border: 1px solid var(--term-green);
+            color: var(--term-green);
+            padding: 0 25px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .send-btn:hover {
+            background: var(--term-green);
+            color: #000;
+        }
+
+        @keyframes blink {
+            50% { opacity: 0; }
+        }
+
+        @media print {
+            aside, .btn-primary, .input-container { display: none; }
+            body { background: white; color: black; }
+            main { padding: 0; }
+            .capability-card { border-color: #000; }
+        }
     </style>
-
 </head>
-
 <body>
 
 <aside>
-
-    <h2>> CYBERSHIELD_ASSIST</h2>
-
-    <div id="status" class="status">
-
-        STATUS : SYSTEM READY
-
+    <div class="logo-container">
+        <div class="logo-icon"></div>
+        <h2>CYBERSHIELD<br>ASSIST</h2>
     </div>
-
-    <hr>
-
-    <button onclick="App.navigate('dashboard')">
-
-        > Dashboard
-
+    <div id="status" class="status">
+        STATUS: <span class="status-online">SYSTEM_ONLINE</span> <span class="status-cursor"></span>
+    </div>
+    
+    <button class="nav-btn active" id="nav-dashboard" onclick="App.navigate('dashboard')">
+        &gt; DASHBOARD
+    </button>
+    <button class="nav-btn" id="nav-interview" onclick="App.navigate('interview')">
+        &gt; INCIDENT_INTERVIEW
+    </button>
+    <button class="nav-btn" id="nav-report" onclick="App.navigate('report')">
+        &gt; RECOVERY_REPORT
     </button>
 
-    <button onclick="App.navigate('interview')">
-
-        > Incident Interview
-
-    </button>
-
-    <button onclick="App.navigate('report')">
-
-        > Recovery Report
-
-    </button>
-
+    <div class="sidebar-footer">👤</div>
 </aside>
 
 <main>
-
     <div id="view">
-
+        <!-- Content will dynamically inject here -->
     </div>
-
 </main>
+
 <script>
-
 const CONFIG = {
-
-    API_URL:"https://script.google.com/macros/s/AKfycbypnzdbkY9jO1xBe2ewQSl-STCQaeZAuICL4TKH5XggSSO7h4hQFx8R6wtMDXkVv8MeNQ/exec"
-
+    API_URL: "https://script.google.com/macros/s/AKfycbypnzdbkY9jO1xBe2ewQSl-STCQaeZAuICL4TKH5XggSSO7h4hQFx8R6wtMDXkVv8MeNQ/exec"
 };
 
-const App={
+const App = {
+    state: {
+        page: "dashboard",
+        chat: [
+            {
+                role: "user",
+                text: "What are your detailed interests?"
+            },
+            {
+                role: "assistant",
+                text: "Hi. In this green area above the incident interview button, you can see all capabilities listed."
+            }
+        ],
+        report: null
+    },
 
-    state:{
-
-    page:"dashboard",
-
-    chat:[
-
-        {
-
-            role:"assistant",
-
-            text:"Hello. I'm CyberShield Assist.\nPlease describe what happened."
-
-        }
-
-    ],
-
-    report:null
-
-},
-
-    navigate(page){
-
-        this.state.page=page;
+    navigate(page) {
+        this.state.page = page;
+        
+        // Update Active Nav Style
+        document.querySelectorAll('.nav-btn').forEach(btn => btn.classList.remove('active'));
+        const activeBtn = document.getElementById(`nav-${page}`);
+        if(activeBtn) activeBtn.classList.add('active');
 
         this.render();
-
     },
 
-    setStatus(text){
-
-        document.getElementById("status").innerHTML=
-
-            "STATUS : "+text;
-
+    setStatus(text, isOnline = true) {
+        document.getElementById("status").innerHTML = 
+            `STATUS: <span class="${isOnline ? 'status-online' : ''}" style="${!isOnline ? 'color: red;' : ''}">${text}</span> <span class="status-cursor"></span>`;
     },
 
-    render(){
-
-        const target=document.getElementById("view");
-
-        switch(this.state.page){
-
+    render() {
+        const target = document.getElementById("view");
+        
+        switch (this.state.page) {
             case "dashboard":
+                target.innerHTML = `
+                    <div class="view-header">#view</div>
+                    <h1 class="view-title">Dashboard</h1>
+                    
+                    <div class="capabilities-grid">
+                        <div class="capability-card">
+                            <div class="card-icon">🧠</div>
+                            <div class="card-content">
+                                <h3>AI_INCIDENT_ASSESSMENT</h3>
+                                <ul>
+                                    <li>Data Ingestion</li>
+                                    <li>Threat Modeling</li>
+                                    <li>Pattern Recognition</li>
+                                </ul>
+                            </div>
+                        </div>
 
-                target.innerHTML=`
+                        <div class="capability-card">
+                            <div class="card-icon">📈</div>
+                            <div class="card-content">
+                                <h3>RISK_ANALYSIS_A</h3>
+                                <ul>
+                                    <li>Risk Analysis</li>
+                                    <li>Risk Analysis</li>
+                                </ul>
+                            </div>
+                        </div>
 
-                <div class="card">
+                        <div class="capability-card">
+                            <div class="card-icon">📊</div>
+                            <div class="card-content">
+                                <h3>RISK_ANALYSIS_B</h3>
+                                <ul>
+                                    <li>Risk Analysis</li>
+                                    <li>Metric Analysis</li>
+                                    <li>Recovery Analysis</li>
+                                </ul>
+                            </div>
+                        </div>
 
-                    <h1>CyberShield Assist</h1>
+                        <div class="capability-card">
+                            <div class="card-icon">🔄</div>
+                            <div class="card-content">
+                                <h3>RECOVERY_ANALYSIS</h3>
+                                <ul>
+                                    <li>Data Changes</li>
+                                    <li>Recovery Processes</li>
+                                    <li>Recovery Analysis</li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
 
-                    <p>
+                    <div class="action-btn-container">
+                        <button class="btn-primary" onclick="App.navigate('interview')">
+                            START_INCIDENT_INTERVIEW
+                        </button>
+                    </div>
 
-                    Welcome to the AI-powered Cyber Incident
-
-                    Assessment and Recovery Platform.
-
-                    </p>
-
-                    <br>
-
-                    <h3>Capabilities</h3>
-
-                    <ul>
-
-                        <li>✔ AI Incident Assessment</li>
-
-                        <li>✔ Risk Analysis</li>
-
-                        <li>✔ Recovery Recommendations</li>
-
-                        <li>✔ Printable Incident Report</li>
-
-                        <li>✔ Google Sheets Logging</li>
-
-                    </ul>
-
-                    <br>
-
-                    <button onclick="App.navigate('interview')">
-
-                        START INCIDENT INTERVIEW
-
-                    </button>
-
-                </div>
-
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <div class="terminal-title">Interview</div>
+                            <div class="terminal-controls">⚊ 🗖 ✕</div>
+                        </div>
+                        <div class="terminal-body">
+                            ${this.state.chat.map(m => `
+                                <div class="chat-line ${m.role}">
+                                    ${m.role}: ${m.text}
+                                </div>
+                            `).join("")}
+                        </div>
+                    </div>
                 `;
-
-            break;
+                break;
 
             case "interview":
-
-const conversation = App.state.chat
-    .map(m => `<p><strong>${m.role}:</strong> ${m.text}</p>`)
-    .join("");
-
-target.innerHTML = `
-
-<div class="card">
-
-    <h2>Cyber Incident Interview</h2>
-
-    <div style="margin-bottom:20px;">
-    ${conversation}
-</div>
-
-    <textarea
-        id="incident"
-        placeholder="Type your answer here...">
-    </textarea>
-
-    <button onclick="Interview.submit()">
-        SEND ANSWER
-    </button>
-
-</div>
-
-`;
-
-break;
+                target.innerHTML = `
+                    <div class="view-header">#view</div>
+                    <h1 class="view-title">Incident Interview</h1>
+                    
+                    <div class="terminal-window">
+                        <div class="terminal-header">
+                            <div class="terminal-title">Active Cyber Assessment Interview</div>
+                            <div class="terminal-controls">⚊ 🗖 ✕</div>
+                        </div>
+                        <div class="terminal-body">
+                            <div style="max-height: 300px; overflow-y: auto; margin-bottom: 20px;">
+                                ${this.state.chat.map(m => `
+                                    <div class="chat-line ${m.role}">
+                                        <strong>${m.role}:</strong> ${m.text}
+                                    </div>
+                                `).join("")}
+                            </div>
+                            
+                            <div class="input-container">
+                                <textarea id="incident" placeholder="Describe the system event or anomaly here..."></textarea>
+                                <button class="send-btn" onclick="Interview.submit()">SEND ANSWER</button>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                break;
 
             case "report":
-
-                target.innerHTML=`
-
-                <div class="card">
-
-                    <h2>Recovery Report</h2>
-
-                    <div id="reportArea">
-
-${
-App.state.report ?
-
-`
-<p><strong>Risk:</strong></p>
-<p>${App.state.report.risk}</p>
-
-<hr>
-
-<p><strong>Analysis</strong></p>
-<p>${App.state.report.analysis}</p>
-
-<hr>
-
-<p><strong>Mitigation</strong></p>
-<p>${App.state.report.mitigation}</p>
-
-<br>
-
-<button onclick="window.print()">
-
-PRINT REPORT
-
-</button>
-
-`
-
-:
-
-`No report generated yet.`
-
-}
-
-</div>
-
-                </div>
-
+                target.innerHTML = `
+                    <div class="view-header">#view</div>
+                    <h1 class="view-title">Recovery Report</h1>
+                    
+                    <div class="capability-card" style="display: block;">
+                        <h3>Incident Analysis Artifact</h3>
+                        <hr style="border: none; border-top: 1px solid rgba(0,255,204,0.2); margin: 15px 0;">
+                        
+                        ${this.state.report ? `
+                            <p style="margin-bottom: 10px;"><strong>Risk Level:</strong></p>
+                            <p style="color: #ff4b4b; margin-bottom: 20px;">${this.state.report.risk}</p>
+                            
+                            <p style="margin-bottom: 10px;"><strong>Analysis Details:</strong></p>
+                            <p style="color: #94a3b8; margin-bottom: 20px; white-space: pre-wrap;">${this.state.report.analysis}</p>
+                            
+                            <p style="margin-bottom: 10px;"><strong>Mitigation Controls:</strong></p>
+                            <p style="color: var(--term-green); margin-bottom: 25px; white-space: pre-wrap;">${this.state.report.mitigation}</p>
+                            
+                            <button class="btn-primary" onclick="window.print()">PRINT SECURITY REPORT</button>
+                        ` : `
+                            <p style="color: #64748b;">No security matrix generated yet. Complete the incident interview module to synthesize recommendations.</p>
+                        `}
+                    </div>
                 `;
-
-            break;
-
+                break;
         }
-
     }
-
 };
-    const Interview = {
 
+const Interview = {
     async submit() {
-
         const input = document.getElementById("incident");
+        if (!input) return;
 
-        if (!input) {
-            alert("Incident input not found.");
+        const summary = input.value.trim();
+        if (summary === "") {
+            alert("Please provide context to evaluate.");
             return;
         }
 
-        
-
-        const summary = input.value.trim();
-
-if (summary === "") {
-    alert("Please describe the cyber incident.");
-    return;
-}
-        App.state.chat.push({
-    role: "user",
-    text: summary
-});
+        App.state.chat.push({ role: "user", text: summary });
         input.value = "";
-
-        App.setStatus("ANALYZING INCIDENT...");
-
-        document.getElementById("view").innerHTML = `
-            <div class="card">
-                <h2>Analyzing...</h2>
-                <p>Please wait while CyberShield Assist analyzes the incident.</p>
-            </div>
-        `;
+        
+        App.setStatus("ANALYZING INCIDENT...", true);
+        App.render();
 
         try {
+            const form = new URLSearchParams();
+            form.append("chat", JSON.stringify(App.state.chat));
 
+            const response = await fetch(CONFIG.API_URL, {
+                method: "POST",
+                body: form
+            });
+
+            if (!response.ok) throw new Error(`HTTP ${response.status}`);
             
+            const result = await response.json();
+            if (!result.success) throw new Error(result.error || "Analysis routine failure.");
 
-const form = new URLSearchParams();
-
-form.append(
-    "chat",
-    JSON.stringify(App.state.chat)
-);
-
-const response = await fetch(CONFIG.API_URL,{
-    method:"POST",
-    body:form
-});
-
-if (!response.ok) {
-    throw new Error(`HTTP ${response.status}`);
-}
-
-const result = await response.json();
-
-            if (!result.success) {
-    throw new Error(result.error || "Analysis failed.");
-}
-
-if (result.complete) {
-
-    App.state.chat.push({
-        role: "assistant",
-        text: result.analysis
-    });
-
-    App.state.report = {
-        risk: result.risk,
-        analysis: result.analysis,
-        mitigation: result.mitigation
-    };
-
-    App.setStatus("INTERVIEW COMPLETE");
-
-    App.navigate("report");
-
-} else {
-
-    App.state.chat.push({
-        role: "assistant",
-        text: result.question
-    });
-
-    App.setStatus("AWAITING RESPONSE");
-
-    App.navigate("interview");
-
-}}
-        catch (err) {
-
+            if (result.complete) {
+                App.state.chat.push({ role: "assistant", text: result.analysis });
+                App.state.report = {
+                    risk: result.risk,
+                    analysis: result.analysis,
+                    mitigation: result.mitigation
+                };
+                App.setStatus("INTERVIEW COMPLETE", true);
+                App.navigate("report");
+            } else {
+                App.state.chat.push({ role: "assistant", text: result.question });
+                App.setStatus("SYSTEM_ONLINE", true);
+                App.navigate("interview");
+            }
+        } catch (err) {
             console.error(err);
-
-            App.setStatus("ERROR");
-
-            document.getElementById("view").innerHTML = `
-                <div class="card">
-
-                    <h2 style="color:red;">
-                        ERROR
-                    </h2>
-
-                    <pre>${err}</pre>
-
-                    <button onclick="App.navigate('interview')">
-
-                        TRY AGAIN
-
-                    </button>
-
-                </div>
-            `;
-
+            App.setStatus("ERROR", false);
+            alert("Matrix Connection Disrupted: " + err.message);
+            App.navigate("interview");
         }
-
     }
-
 };
 
+// Start system initialization
 App.render();
-
 </script>
-
 </body>
 </html>
