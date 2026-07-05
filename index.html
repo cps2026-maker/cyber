@@ -984,6 +984,7 @@ const response = await fetch(CONFIG.API_URL, {
                 } catch(e) {
                     throw new Error(textData || "Invalid server response layout.");
                 }
+                console.log(result);
 
                 if (!response.ok || (result && result.error)) {
                     let msg = result?.error?.message || "HTTP Connection Failure Context.";
