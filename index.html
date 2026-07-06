@@ -643,12 +643,26 @@
 </aside>
 
 <main>
-    <div style="margin-bottom: 20px; padding: 15px; border: 1px solid var(--term-green); background: rgba(57, 255, 20, 0.05);">
+    <style>
+    /* Add this to your existing <style> block */
+    @keyframes k-blink-animation {
+        0% { color: #39ff14; }    /* Term Green */
+        33% { color: #00f0ff; }   /* Cyan Glow */
+        66% { color: #5b7fff; }   /* Text Blue */
+        100% { color: #39ff14; }  /* Cycle back */
+    }
+    .k-blink {
+        animation: k-blink-animation 3s infinite;
+        font-weight: bold;
+    }
+</style>
+
+<div style="margin-bottom: 20px; padding: 15px; border: 1px solid var(--term-green); background: rgba(57, 255, 20, 0.05);">
     <h2 style="color: var(--term-green); font-size: 1.1rem; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 1px;">
         🚨 Operational Situation Analysis
     </h2>
     <p style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.4;">
-        System integrity compromised. Use the direct lines below for <strong>KIP's</strong> intervention.
+        System integrity compromised. Use the direct lines below for <span class="k-blink">KIP's</span> intervention.
     </p>
 </div>
     <div id="comms-banner" class="hotline-banner">
