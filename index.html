@@ -1,4 +1,4 @@
-..<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -643,17 +643,18 @@
 </aside>
 
 <main>
-    <style>
-    /* Add this to your existing <style> block */
-    @keyframes k-blink-animation {
-        0% { color: #39ff14; }    /* Term Green */
-        33% { color: #00f0ff; }   /* Cyan Glow */
-        66% { color: #5b7fff; }   /* Text Blue */
-        100% { color: #39ff14; }  /* Cycle back */
+   <style>
+    /* LED Pulse/Flicker Effect */
+    @keyframes led-flicker {
+        0%, 100% { opacity: 1; text-shadow: 0 0 8px #39ff14; }
+        50% { opacity: 0.4; text-shadow: none; }
+        55% { opacity: 0.8; text-shadow: 0 0 5px #39ff14; }
+        60% { opacity: 0.4; text-shadow: none; }
     }
-    .k-blink {
-        animation: k-blink-animation 3s infinite;
+    .k-led {
+        color: #39ff14;
         font-weight: bold;
+        animation: led-flicker 2s infinite ease-in-out;
     }
 </style>
 
@@ -662,7 +663,7 @@
         🚨 Operational Situation Analysis
     </h2>
     <p style="color: #e2e8f0; font-size: 0.9rem; line-height: 1.4;">
-        System integrity compromised. Use the direct lines below for <span class="k-blink">KIP's</span> intervention.
+        System integrity compromised. Use the direct lines below for <span class="k-led">KIP's</span> intervention.
     </p>
 </div>
     <div id="comms-banner" class="hotline-banner">
